@@ -1,12 +1,12 @@
 syscall::open:entry
-/copyinstr(arg0) == "x.txt" || copyinstr(arg0) == "y.txt" || copyinstr(arg0) == "z.txt"/
+/copyinstr(arg0) == "/home/F/x.txt" || copyinstr(arg0) == "/home/S/y.txt" || copyinstr(arg0) == "/home/H/z.txt"/
 {
 	file = copyinstr(arg0);
 	printf("\n%s is opened by the user with uid %d \n",copyinstr(arg0),uid);
 }
 
 syscall::open:return
-/file == "x.txt" || file == "y.txt" || file == "z.txt"/
+/file == "/home/F/x.txt" || file == "/home/S/y.txt" || file == "/home/H/z.txt"/
 {
 	fd = arg0;
 	printf("\nOpen call returned the file with file descriptor = %d\n",arg0);
@@ -16,7 +16,7 @@ syscall::open:return
 syscall::read:entry
 /execname == "a.out" && b == 1 && arg0 == fd/
 {
-	printf("\nRead is called with the following arguments fd = %d,bufpointer = %d, size = %d\n",arg0,arg1,arg2);
+	printf("\nRead is called with the arguments fd = %d, size = %d\n",arg0,arg2);
 	c = 1;
 }
 
@@ -30,7 +30,7 @@ syscall::read:return
 syscall::write:entry
 /execname == "a.out" && b == 1 && arg0 == fd/
 {
-	printf("\nWrite is called with the following arguments fd = %d\n,bufpointer = %d,size = %d\n",arg0,arg1,arg2);
+	printf("\nWrite is called with the following arguments fd = %d\n, size = %d\n",arg0,arg2);
 	d = 1;
 }
 
@@ -43,7 +43,7 @@ syscall::write:return
 }
 
 syscall::close:entry
-/execname == "a.out" && b == 1/
+/execname == "a.out" /
 {
 	printf("\nClose called with ile descriptor = %d\n",arg0);
 }
@@ -67,10 +67,10 @@ proc:::exec-success
 {
 	printf("%s process with pid %d  is started  successfully\n",execname,pid);
 }
-syscall::fork:return
-{
-	printf("\nfork called\n");
-}
+
+
+
+
 proc:::exec-failure
 {
 	printf("\nThe process is failed to start\n");
